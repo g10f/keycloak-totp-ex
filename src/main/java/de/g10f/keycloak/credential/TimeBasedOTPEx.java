@@ -22,11 +22,13 @@ public class TimeBasedOTPEx extends TimeBasedOTP {
 
     @Override
     public boolean validateTOTP(String token, byte[] secret) {
-        // secret is assumed as a base32 encoded string
-        if (secret.length < 2) {
+        // secret is assumed as a base32 encoded string and
+        // base32.decode(value) throws an exception if the value has only one or zero chars.
+        if (secret.length > 1) {
+            return super.validateTOTP(token, secret);
+        } else {
             return false;
         }
-        return super.validateTOTP(token, secret);
     }
 
 
