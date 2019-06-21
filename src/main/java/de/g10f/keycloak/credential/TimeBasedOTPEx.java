@@ -11,7 +11,6 @@ import java.math.BigInteger;
  * TOTP: Time-based One-time Password Algorithm Based on http://tools.ietf.org/html/draft-mraihi-totp-timebased-06
  *
  * @author <a href="mailto:mail@g10f.de">Gunnar Scherf</a>
- * @since Sep 20, 2010
  */
 public class TimeBasedOTPEx extends TimeBasedOTP {
     private static final int[] DIGITS_POWER = {1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000};
