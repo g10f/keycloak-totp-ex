@@ -6,6 +6,7 @@ import org.keycloak.models.OTPPolicy;
 public class TOTPTest {
     @Test
     public void testgenerateOTP() throws Exception {
+        // Test that random ASCII strings at least don't throw any exception
         BasicConfigurator.configure();
 
         OTPPolicy policy = OTPPolicy.DEFAULT_POLICY;
