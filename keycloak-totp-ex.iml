@@ -11,16 +11,16 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.keycloak:keycloak-core:6.0.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.keycloak:keycloak-common:6.0.1" level="project" />
+    <orderEntry type="module" module-name="keycloak-core" scope="PROVIDED" />
+    <orderEntry type="module" module-name="keycloak-common" scope="PROVIDED" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.bouncycastle:bcprov-jdk15on:1.60" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.bouncycastle:bcpkix-jdk15on:1.60" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.fasterxml.jackson.core:jackson-core:2.9.8" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.9.8" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.keycloak:keycloak-server-spi:6.0.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.keycloak:keycloak-server-spi-private:6.0.1" level="project" />
+    <orderEntry type="module" module-name="keycloak-server-spi" scope="PROVIDED" />
+    <orderEntry type="module" module-name="keycloak-server-spi-private" scope="PROVIDED" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.jboss.logging:jboss-logging:3.3.2.Final" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.keycloak:keycloak-services:6.0.1" level="project" />
+    <orderEntry type="module" module-name="keycloak-services" scope="PROVIDED" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.mail:javax.mail-api:1.6.2" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish:javax.json:1.1.2" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.json:javax.json-api:1.1.2" level="project" />
