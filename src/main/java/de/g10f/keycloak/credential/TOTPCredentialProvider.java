@@ -19,7 +19,6 @@ import java.util.List;
 public class TOTPCredentialProvider extends OTPCredentialProvider {
     private static final Logger logger = Logger.getLogger(OTPCredentialProvider.class);
 
-    public static final String TOTP = CredentialModel.TOTP;
     public TOTPCredentialProvider(KeycloakSession session) {
         super(session);
     }
@@ -62,13 +61,13 @@ public class TOTPCredentialProvider extends OTPCredentialProvider {
 
     @Override
     public boolean supportsCredentialType(String credentialType) {
-        return CredentialModel.TOTP.equals(credentialType) || TOTP.equals(credentialType);
+        return CredentialModel.TOTP.equals(credentialType);
     }
 
     @Override
     public void onCache(RealmModel realm, CachedUserModel user, UserModel delegate) {
-        List<CredentialModel> creds = getCredentialStore().getStoredCredentialsByType(realm, user, TOTP);
-        user.getCachedWith().put(OTPCredentialProvider.class.getName() + "." + TOTP, creds);
+        List<CredentialModel> creds = getCredentialStore().getStoredCredentialsByType(realm, user, CredentialModel.TOTP);
+        user.getCachedWith().put(OTPCredentialProvider.class.getName() + "." + CredentialModel.TOTP, creds);
     }
 
     @Override
@@ -86,9 +85,9 @@ public class TOTPCredentialProvider extends OTPCredentialProvider {
         OTPPolicy policy = realm.getOTPPolicy();
         if (realm.getOTPPolicy().getType().equals(CredentialModel.TOTP)) {
             TimeBasedOTPEx validator = new TimeBasedOTPEx(policy.getAlgorithm(), policy.getDigits(), policy.getPeriod(), policy.getLookAheadWindow());
-            List<CredentialModel> creds = getCachedCredentials(user, TOTP);
+            List<CredentialModel> creds = getCachedCredentials(user, CredentialModel.TOTP);
             if (creds == null) {
-                creds = getCredentialStore().getStoredCredentialsByType(realm, user, TOTP);
+                creds = getCredentialStore().getStoredCredentialsByType(realm, user, CredentialModel.TOTP);
             } else {
                 logger.debugv("Cache hit for TOTP for user {0}", user.getUsername());
             }
