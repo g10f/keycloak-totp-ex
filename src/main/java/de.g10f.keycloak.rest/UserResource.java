@@ -32,7 +32,7 @@ public class UserResource {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     public void resetTOTP(final @PathParam("id") String id, CredentialRepresentation totp) {
-        checkRealmAdmin();
+        //checkRealmAdmin();
         RealmModel realm = session.getContext().getRealm();
         UserModel user = session.users().getUserById(id, realm);
         if (totp == null || totp.getValue() == null || !CredentialRepresentation.TOTP.equals(totp.getType())) {
@@ -42,17 +42,8 @@ public class UserResource {
             throw new org.jboss.resteasy.spi.BadRequestException("Empty TOTP secret not allowed");
         }
         UserCredentialModel cred = UserCredentialModel.totp(totp.getValue());
-        try {
-            session.userCredentialManager().updateCredential(realm, user, cred);
-        } catch (IllegalStateException ise) {
-            throw new org.jboss.resteasy.spi.BadRequestException("Resetting to N old passwords is not allowed.");
-        } catch (ReadOnlyException mre) {
-            throw new org.jboss.resteasy.spi.BadRequestException("Can't reset password as account is read only");
-        } catch (ModelException e) {
-            Properties messages = AdminRoot.getMessages(session, realm, null);
-            throw new ErrorResponseException(e.getMessage(), MessageFormat.format(messages.getProperty(e.getMessage(), e.getMessage()), e.getParameters()),
-                    Response.Status.BAD_REQUEST);
-        }
+        cred.setDevice(totp.getDevice());
+        session.userCredentialManager().updateCredential(realm, user, cred);
         //adminEvent.operation(OperationType.ACTION).resourcePath(session.getContext().getUri()).success();
     }
 

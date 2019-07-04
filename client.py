@@ -84,7 +84,7 @@ def main():
     try:
         # response = client.get('/auth/admin/realms/demo/users/ee2ef013-45fe-494f-b1e3-5ee66230f9ae')
         # print(response.text)
-        data = {"type": "totp", "value": "demo"}
+        data = {"type": "totp", "value": "KX2SI3KNXJF5MGY3", "device": "isam"}
         response = client.data = client.put('/auth/realms/demo/user/ee2ef013-45fe-494f-b1e3-5ee66230f9ae', data)
         print(response)
     except Exception as e:
