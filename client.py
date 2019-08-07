@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 import argparse
 import logging
-import sys
 from urllib.parse import urljoin
 
 import requests
+import sys
 from cachecontrol import CacheControl
 
 logging.basicConfig(stream=sys.stdout, level='WARNING', format="%(levelname)s %(asctime)s: %(message)s")
@@ -12,11 +12,12 @@ logger = logging.getLogger(__name__)
 
 
 class ApiClient(object):
-    def __init__(self, base_uri, client_id, username, password):
+    def __init__(self, base_uri, client_id, username, password, scope=None):
         self.base_uri = base_uri
         self.client_id = client_id
         self.username = username
         self.password = password
+        self.scope = scope
         self.session = CacheControl(requests.session())
 
     @property
@@ -39,6 +40,8 @@ class ApiClient(object):
 
         body = {'grant_type': 'password', 'client_id': self.client_id, 'username': self.username,
                 'password': self.password}
+        if self.scope:
+            body['scope'] = self.scope
         headers = {'Content-Type': 'application/x-www-form-urlencoded'}
         json_response = self.session.post(token_endpoint, headers=headers, data=body).json()
         if 'error' in json_response:
@@ -67,6 +70,7 @@ def main():
     parser.add_argument('client_id')
     parser.add_argument('username')
     parser.add_argument('password')
+    parser.add_argument('-s', '--scope', default=None)
     parser.add_argument('-b', '--base_uri', help='The base_uri of the API ..',
                         default='http://localhost:8081/auth/realms/demo/')
 
@@ -79,17 +83,34 @@ def main():
     client_id = args.pop('client_id')
     username = args.pop('username')
     password = args.pop('password')
+    scope = args.pop('scope')
 
-    client = ApiClient(base_uri, client_id, username, password)
+    client = ApiClient(base_uri, client_id, username, password, scope)
     try:
-        # response = client.get('/auth/admin/realms/demo/users/ee2ef013-45fe-494f-b1e3-5ee66230f9ae')
-        # print(response.text)
-        data = {"type": "totp", "value": "KX2SI3KNXJF5MGY3", "device": "isam"}
-        response = client.data = client.put('/auth/realms/demo/user/ee2ef013-45fe-494f-b1e3-5ee66230f9ae', data)
-        print(response)
+        # update_totp(client)
+        test(client)
     except Exception as e:
         logger.exception(e)
 
 
+def update_totp(client):
+    # response = client.get('/auth/admin/realms/demo/users/ee2ef013-45fe-494f-b1e3-5ee66230f9ae')
+    # print(response.text)
+    # data = {"type": "totp", "value": "KX2SI3KNXJF5MGY3", "device": "ex"}
+    data = {"type": "totp", "value": "firAvEGFyr5H9TgL4sAI"}
+    response = client.put('/auth/realms/demo/user/demo/totp-ex', data)
+    #
+    # response = client.put('/auth/realms/demo/user/test1/totp-ex', data)
+    # response = client.put('/auth/realms/demo/user/test2/totp-ex', data)
+    # response = client.put('/auth/realms/demo/user/ee2ef013-45fe-494f-b1e3-5ee66230f9ae', data)
+    print(response)
+
+
+def test(client):
+    response = client.get('/auth/realms/master/realms')
+    print(response)
+
+
 if __name__ == "__main__":
     main()
+    # test()
