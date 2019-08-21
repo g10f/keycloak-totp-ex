@@ -1,6 +1,6 @@
 package de.g10f.keycloak.rest;
 
-import de.g10f.keycloak.credential.TOTPCredentialProvider;
+import org.jboss.logging.Logger;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserCredentialModel;
@@ -20,6 +20,7 @@ public class UserResource {
 
     private final KeycloakSession session;
     private final AuthenticationManager.AuthResult auth;
+    private static final Logger logger = Logger.getLogger(UserResource.class);
 
     public UserResource(KeycloakSession session) {
         this.session = session;
@@ -42,7 +43,7 @@ public class UserResource {
         UserCredentialModel cred = UserCredentialModel.totp(totp.getValue());
         cred.setDevice(totp.getDevice());
         session.userCredentialManager().updateCredential(realm, user, cred);
-        //adminEvent.operation(OperationType.ACTION).resourcePath(session.getContext().getUri()).success();
+        logger.infov("Updated totp credentials from user \"{0}\" (device {1}).", username, totp.getDevice());
     }
 
     private void checkRealmAdmin() {

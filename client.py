@@ -87,8 +87,8 @@ def main():
 
     client = ApiClient(base_uri, client_id, username, password, scope)
     try:
-        # update_totp(client)
-        test(client)
+        update_totp(client)
+        # test(client)
     except Exception as e:
         logger.exception(e)
 
@@ -96,7 +96,7 @@ def main():
 def update_totp(client):
     # response = client.get('/auth/admin/realms/demo/users/ee2ef013-45fe-494f-b1e3-5ee66230f9ae')
     # print(response.text)
-    # data = {"type": "totp", "value": "KX2SI3KNXJF5MGY3", "device": "ex"}
+    data = {"type": "totp", "value": "KX2SI3KNXJF5MGY3", "device": "ex"}
     data = {"type": "totp", "value": "firAvEGFyr5H9TgL4sAI"}
     response = client.put('/auth/realms/demo/user/demo/totp-ex', data)
     #

@@ -8,7 +8,8 @@ credential table.
 ## Installation
 copy the jar-file to the deployment dir of keycloak
 
-disable the original totp credential provider
+disable the original totp credential provider, otherwise OTPCredentialProvider.updateCredential always deletes 
+all exiting totp credentials when adding a new one.
 
     "credential": {
         "keycloak-otp": {
