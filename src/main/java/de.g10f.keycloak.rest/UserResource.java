@@ -18,9 +18,9 @@ import javax.ws.rs.core.MediaType;
  */
 public class UserResource {
 
+    private static final Logger logger = Logger.getLogger(UserResource.class);
     private final KeycloakSession session;
     private final AuthenticationManager.AuthResult auth;
-    private static final Logger logger = Logger.getLogger(UserResource.class);
 
     public UserResource(KeycloakSession session) {
         this.session = session;
@@ -35,14 +35,18 @@ public class UserResource {
         RealmModel realm = session.getContext().getRealm();
         UserModel user = session.users().getUserByUsername(username, realm);
         if (totp == null || totp.getValue() == null || !CredentialRepresentation.TOTP.equals(totp.getType())) {
-            throw new org.jboss.resteasy.spi.BadRequestException("No TOTP provided");
+            throw new javax.ws.rs.BadRequestException("No TOTP provided");
         }
         if (Validation.isBlank(totp.getValue())) {
-            throw new org.jboss.resteasy.spi.BadRequestException("Empty TOTP secret not allowed");
+            throw new javax.ws.rs.BadRequestException("Empty TOTP secret not allowed");
         }
         UserCredentialModel cred = UserCredentialModel.totp(totp.getValue());
         cred.setDevice(totp.getDevice());
         session.userCredentialManager().updateCredential(realm, user, cred);
+        if (!user.isEnabled()) {
+            user.setEnabled(true);
+            logger.infov("Enabled user \"{0}\".", username);
+        }
         logger.infov("Updated totp credentials from user \"{0}\" (device {1}).", username, totp.getDevice());
     }
 
