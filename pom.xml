@@ -72,6 +72,13 @@
                     </archive>
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-plugin-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <goalPrefix>lint</goalPrefix>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
