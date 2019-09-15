@@ -46,7 +46,7 @@ public class TOTPCredentialProvider extends OTPCredentialProvider {
                 // if creating a new external Credential, only delete external Credentials
                 disableCredentialTypeEx(realm, user, CredentialModel.OTP);
             } else {
-                // delete all existing
+                // delete all non ex
                 disableCredentialType(realm, user, CredentialModel.OTP);
             }
             model = new CredentialModel();
@@ -74,7 +74,9 @@ public class TOTPCredentialProvider extends OTPCredentialProvider {
 
     }
 
-    private void disableCredentialTypeEx(RealmModel realm, UserModel user, String credentialType) {
+    @Override
+    public void disableCredentialType(RealmModel realm, UserModel user, String credentialType) {
+        // only delete non ex TOTP secrets
         boolean disableTOTP = false, disableHOTP = false;
         if (CredentialModel.OTP.equals(credentialType)) {
             disableTOTP = true;
@@ -88,7 +90,48 @@ public class TOTPCredentialProvider extends OTPCredentialProvider {
         if (disableHOTP) {
             List<CredentialModel> hotp = getCredentialStore().getStoredCredentialsByType(realm, user, CredentialModel.HOTP);
             for (CredentialModel cred : hotp) {
-                // only delete credentials with same device
+                // only delete non ex credentials
+                if (!EX_DEVICE.equals(cred.getDevice())) {
+                    getCredentialStore().removeStoredCredential(realm, user, cred.getId());
+                }
+            }
+        }
+        if (disableTOTP) {
+            List<CredentialModel> totp = getCredentialStore().getStoredCredentialsByType(realm, user, CredentialModel.TOTP);
+            if (!totp.isEmpty()) {
+                for (CredentialModel cred : totp) {
+                    // only delete non ex credentials
+                    if (!EX_DEVICE.equals(cred.getDevice())) {
+                        getCredentialStore().removeStoredCredential(realm, user, cred.getId());
+                    }
+                }
+            }
+
+        }
+        if (disableTOTP || disableHOTP) {
+            UserCache userCache = session.userCache();
+            if (userCache != null) {
+                userCache.evict(realm, user);
+            }
+        }
+    }
+
+    public void disableCredentialTypeEx(RealmModel realm, UserModel user, String credentialType) {
+        // only delete ex credentials
+        boolean disableTOTP = false, disableHOTP = false;
+        if (CredentialModel.OTP.equals(credentialType)) {
+            disableTOTP = true;
+            disableHOTP = true;
+        } else if (CredentialModel.HOTP.equals(credentialType)) {
+            disableHOTP = true;
+
+        } else if (CredentialModel.TOTP.equals(credentialType)) {
+            disableTOTP = true;
+        }
+        if (disableHOTP) {
+            List<CredentialModel> hotp = getCredentialStore().getStoredCredentialsByType(realm, user, CredentialModel.HOTP);
+            for (CredentialModel cred : hotp) {
+                // only delete ex credentials
                 if (EX_DEVICE.equals(cred.getDevice())) {
                     getCredentialStore().removeStoredCredential(realm, user, cred.getId());
                 }
@@ -98,7 +141,7 @@ public class TOTPCredentialProvider extends OTPCredentialProvider {
             List<CredentialModel> totp = getCredentialStore().getStoredCredentialsByType(realm, user, CredentialModel.TOTP);
             if (!totp.isEmpty()) {
                 for (CredentialModel cred : totp) {
-                    // only delete credentials with same device
+                    // only delete ex credentials
                     if (EX_DEVICE.equals(cred.getDevice())) {
                         getCredentialStore().removeStoredCredential(realm, user, cred.getId());
                     }
@@ -113,6 +156,7 @@ public class TOTPCredentialProvider extends OTPCredentialProvider {
             }
         }
     }
+
 
     @Override
     public boolean isValid(RealmModel realm, UserModel user, CredentialInput input) {
